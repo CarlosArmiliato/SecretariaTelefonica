@@ -1,1 +1,183 @@
-<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"><Grid><TextBlock Text="Preflight" /></Grid></UserControl>
+<UserControl
+    x:Class="Joana.Desktop.Views.CallPreparationView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    MinWidth="720"
+    MinHeight="640"
+    AutomationProperties.Name="Preparação da chamada"
+    AutomationProperties.HelpText="Preencha e revise o preflight antes de solicitar a confirmação de discagem"
+    KeyboardNavigation.TabNavigation="Local">
+    <UserControl.Resources>
+        <Style x:Key="ReviewPanelStyle" TargetType="{x:Type GroupBox}">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ReviewEnabled}" Value="True">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="{x:Type TextBox}">
+            <Setter Property="Margin" Value="0,0,0,4" />
+            <Setter Property="Padding" Value="8,6" />
+            <Setter Property="MinHeight" Value="34" />
+            <Setter Property="VerticalContentAlignment" Value="Top" />
+            <Setter Property="Validation.ErrorTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <DockPanel LastChildFill="True">
+                            <TextBlock DockPanel.Dock="Right" Margin="6,0,0,0" Foreground="#B00020" FontWeight="Bold" Text="!" AutomationProperties.Name="Campo com erro" />
+                            <AdornedElementPlaceholder />
+                        </DockPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="BorderBrush" Value="#B00020" />
+                    <Setter Property="ToolTip" Value="Revise este campo antes de continuar." />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="{x:Type Label}">
+            <Setter Property="Margin" Value="0,8,12,2" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="24" MaxWidth="960">
+            <TextBlock Text="Preparar chamada" FontSize="26" FontWeight="SemiBold" />
+            <TextBlock Margin="0,4,0,20" Text="Preflight da chamada — a discagem permanece indisponível até que todos os dados sejam revisados e Carlos confirme imediatamente antes da ação." TextWrapping="Wrap" />
+
+            <GroupBox Header="Dados do contato" AutomationProperties.Name="Dados do contato">
+                <Grid Margin="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="190" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Target="{Binding ElementName=CompanyNameInput}" Content="Empresa ou assistência *" />
+                    <TextBox x:Name="CompanyNameInput" Grid.Row="0" Grid.Column="1" Text="{Binding CompanyName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" AutomationProperties.Name="Empresa ou assistência" AutomationProperties.HelpText="Informe o nome da empresa ou assistência técnica." />
+
+                    <Label Grid.Row="1" Grid.Column="0" Target="{Binding ElementName=PhoneNumberInput}" Content="Número a discar *" />
+                    <TextBox x:Name="PhoneNumberInput" Grid.Row="1" Grid.Column="1" Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" AutomationProperties.Name="Número a discar" AutomationProperties.HelpText="Informe o número autorizado para esta chamada." />
+
+                    <Label Grid.Row="2" Grid.Column="0" Target="{Binding ElementName=ObjectiveInput}" Content="Objetivo da chamada *" />
+                    <TextBox x:Name="ObjectiveInput" Grid.Row="2" Grid.Column="1" MinHeight="58" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding Objective, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" AutomationProperties.Name="Objetivo da chamada" AutomationProperties.HelpText="Descreva o resultado que deve ser solicitado, sem aceitar compromissos." />
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Margin="0,16,0,0" Header="Fatos para o preflight" AutomationProperties.Name="Fatos para o preflight">
+                <Grid Margin="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="190" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Target="{Binding ElementName=EquipmentInput}" Content="Equipamento ou item *" />
+                    <TextBox x:Name="EquipmentInput" Grid.Row="0" Grid.Column="1" Text="{Binding Equipment, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" AutomationProperties.Name="Equipamento ou item" />
+
+                    <Label Grid.Row="1" Grid.Column="0" Target="{Binding ElementName=ProblemInput}" Content="Problema descrito *" />
+                    <TextBox x:Name="ProblemInput" Grid.Row="1" Grid.Column="1" MinHeight="58" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding ProblemDescription, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" AutomationProperties.Name="Problema descrito" />
+
+                    <Label Grid.Row="2" Grid.Column="0" Target="{Binding ElementName=FactsInput}" Content="Fatos e testes relatáveis *" />
+                    <TextBox x:Name="FactsInput" Grid.Row="2" Grid.Column="1" MinHeight="58" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding ReportableFactsAndTests, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" AutomationProperties.Name="Fatos e testes relatáveis" AutomationProperties.HelpText="Registre apenas fatos fornecidos por Carlos. Não invente testes ou mensagens." />
+                    <CheckBox Grid.Row="3" Grid.Column="1" Margin="0,4,0,8" Content="Nenhum teste foi realizado (declarar explicitamente)" IsChecked="{Binding NoTestsReported}" AutomationProperties.Name="Nenhum teste foi realizado" />
+
+                    <Label Grid.Row="4" Grid.Column="0" Target="{Binding ElementName=PriceInput}" Content="Preço permitido" />
+                    <TextBox x:Name="PriceInput" Grid.Row="4" Grid.Column="1" Text="{Binding AllowedPriceRange, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" AutomationProperties.Name="Faixa de preço permitida" AutomationProperties.HelpText="Este limite não será revelado como estratégia sem autorização explícita." />
+
+                    <Label Grid.Row="5" Grid.Column="0" Target="{Binding ElementName=AvailabilityInput}" Content="Disponibilidade *" />
+                    <TextBox x:Name="AvailabilityInput" Grid.Row="5" Grid.Column="1" MinHeight="48" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding Availability, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" AutomationProperties.Name="Disponibilidade" />
+
+                    <Label Grid.Row="6" Grid.Column="0" Target="{Binding ElementName=QuestionsInput}" Content="Perguntas a responder *" />
+                    <TextBox x:Name="QuestionsInput" Grid.Row="6" Grid.Column="1" MinHeight="58" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding Questions, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" AutomationProperties.Name="Perguntas a responder" />
+
+                    <Label Grid.Row="7" Grid.Column="0" Target="{Binding ElementName=AuthorizedDataInput}" Content="Dados que podem ser revelados *" />
+                    <TextBox x:Name="AuthorizedDataInput" Grid.Row="7" Grid.Column="1" MinHeight="48" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding AuthorizedData, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" AutomationProperties.Name="Dados autorizados para revelar" AutomationProperties.HelpText="Modelo e número de série exigem autorizações separadas para esta chamada." />
+
+                    <Label Grid.Row="8" Grid.Column="0" Target="{Binding ElementName=SuccessInput}" Content="Critério de sucesso *" />
+                    <TextBox x:Name="SuccessInput" Grid.Row="8" Grid.Column="1" MinHeight="48" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding SuccessCriteria, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" AutomationProperties.Name="Critério de sucesso" />
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Margin="0,16,0,0" Header="Limites e transferência" AutomationProperties.Name="Limites e transferência">
+                <Grid Margin="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="190" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" Target="{Binding ElementName=TransferInput}" Content="Gatilhos de transferência *" />
+                    <TextBox x:Name="TransferInput" Grid.Row="0" Grid.Column="1" MinHeight="58" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding HandoffTriggers, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" AutomationProperties.Name="Gatilhos de transferência" AutomationProperties.HelpText="Inclua assuntos proibidos, dúvidas e pedidos para falar com Carlos." />
+
+                    <CheckBox Grid.Row="1" Grid.Column="1" Margin="0,8,0,4" Content="Carlos está disponível para supervisionar" IsChecked="{Binding SupervisionPresent}" AutomationProperties.Name="Carlos disponível para supervisão" />
+                    <CheckBox Grid.Row="2" Grid.Column="1" Margin="0,4,0,4" Content="Modo de simulação ativo (obrigatório neste MVP)" IsChecked="{Binding SimulationMode}" IsEnabled="False" AutomationProperties.Name="Modo de simulação ativo" />
+                </Grid>
+            </GroupBox>
+
+            <ItemsControl Margin="0,12,0,0" ItemsSource="{Binding ValidationErrors}" AutomationProperties.Name="Erros de validação">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Margin="0,2" Foreground="#B00020" TextWrapping="Wrap" Text="• {Binding}" AutomationProperties.LiveSetting="Assertive" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <StackPanel Margin="0,18,0,0" Orientation="Horizontal">
+                <Button Content="Revisar preflight" Command="{Binding ReviewPreflightCommand}" IsEnabled="{Binding CanReview}" MinWidth="160" MinHeight="40" Margin="0,0,12,0" AutomationProperties.Name="Revisar preflight" AutomationProperties.HelpText="Valida os campos e cria uma revisão somente leitura." />
+                <Button Content="Solicitar confirmação de discagem" Command="{Binding RequestDialConfirmationCommand}" IsEnabled="{Binding ReviewEnabled}" MinWidth="230" MinHeight="40" AutomationProperties.Name="Solicitar confirmação de discagem" AutomationProperties.HelpText="Abre a confirmação final somente após uma revisão válida." />
+            </StackPanel>
+
+            <GroupBox Margin="0,24,0,0" Header="Revisão somente leitura" Style="{StaticResource ReviewPanelStyle}" AutomationProperties.Name="Revisão somente leitura">
+                <Grid Margin="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="190" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,6,12,6" FontWeight="SemiBold" Text="Empresa" />
+                    <TextBlock Grid.Row="0" Grid.Column="1" Margin="0,6" Text="{Binding CompanyName}" TextWrapping="Wrap" AutomationProperties.Name="Empresa revisada" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,6,12,6" FontWeight="SemiBold" Text="Número" />
+                    <TextBlock Grid.Row="1" Grid.Column="1" Margin="0,6" Text="{Binding PhoneNumber}" AutomationProperties.Name="Número revisado" />
+                    <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,6,12,6" FontWeight="SemiBold" Text="Objetivo" />
+                    <TextBlock Grid.Row="2" Grid.Column="1" Margin="0,6" Text="{Binding Objective}" TextWrapping="Wrap" AutomationProperties.Name="Objetivo revisado" />
+                    <TextBlock Grid.Row="3" Grid.Column="0" Margin="0,6,12,6" FontWeight="SemiBold" Text="Revisão" />
+                    <TextBlock Grid.Row="3" Grid.Column="1" Margin="0,6" Text="{Binding RevisionId}" AutomationProperties.Name="Identificador da revisão" />
+                    <TextBlock Grid.Row="4" Grid.Column="0" Margin="0,6,12,6" FontWeight="SemiBold" Text="Estado" />
+                    <TextBlock Grid.Row="4" Grid.Column="1" Margin="0,6" Text="{Binding RevisionStatus}" AutomationProperties.Name="Estado da revisão" />
+                    <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,12,0,0" Text="Esta revisão é um instantâneo. Alterar empresa, número ou objetivo invalida a confirmação e exige nova revisão." TextWrapping="Wrap" />
+                </Grid>
+            </GroupBox>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
