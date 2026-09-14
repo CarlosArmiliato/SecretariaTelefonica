@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+state/
+records/
+bin/
+obj/
+*.user
+*.suo
+.vs/
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+*.log

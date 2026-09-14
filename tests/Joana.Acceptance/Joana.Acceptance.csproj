@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../../src/Joana.Domain/Joana.Domain.csproj" /><ProjectReference Include="../../src/Joana.Application/Joana.Application.csproj" /><ProjectReference Include="../../src/Joana.Infrastructure/Joana.Infrastructure.csproj" /><ProjectReference Include="../../src/Joana.Simulators/Joana.Simulators.csproj" /></ItemGroup>
+</Project>

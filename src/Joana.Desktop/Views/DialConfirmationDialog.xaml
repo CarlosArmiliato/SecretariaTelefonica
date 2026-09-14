@@ -1,0 +1,1 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"><StackPanel><TextBlock Text="Confirmar destino, numero e objetivo" /></StackPanel></Window>

@@ -1,6 +1,6 @@
 # Feature Specification: Ligação para Assistência Técnica
 
-**Feature Branch**: `main`
+**Feature Branch**: `carlos/ft_clarify_ligacao_assistencia`
 
 **Created**: 2026-09-11
 
@@ -9,6 +9,12 @@
 **Input**: User description: "MVP de ligação sob demanda para assistência técnica, com preflight,
 confirmação imediata antes de ligar, diálogo limitado à coleta de orçamento, supervisão e takeover
 humano, transcrição local e guardrails do Projeto Joana."
+
+## Clarifications
+
+### Session 2026-09-13
+
+- Q: Quanto tempo Joana deve aguardar sua confirmação de que assumiu a chamada antes de encerrá-la com segurança? → A: 10 segundos, contados desde o início da transferência, mantendo a interrupção imediata da fala automatizada.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -89,8 +95,9 @@ agente e o desfecho correto.
    automatizado.
 2. **Given** uma categoria proibida ou dúvida, **When** Joana inicia a transferência e Carlos confirma
    que assumiu, **Then** a automação deixa de falar e registra a intervenção humana.
-3. **Given** uma transferência não confirmada, **When** o limite de espera é atingido ou a tomada de
-   controle falha, **Then** Joana comunica que chegou ao limite autorizado, encerra a chamada e
+3. **Given** uma transferência sem confirmação de Carlos nem evidência inequívoca de tomada de
+   controle, **When** passam 10 segundos desde o início da transferência ou ocorre falha antes desse
+   prazo, **Then** Joana comunica que chegou ao limite autorizado, encerra a chamada e
    registra a falha sem improvisar.
 
 ---
@@ -116,7 +123,8 @@ prazo de retenção.
 2. **Given** que uma informação proibida foi dita, **When** a transcrição é persistida, **Then** o
    conteúdo sensível é substituído pelo marcador literal `[DADO REDIGIDO]`.
 3. **Given** registros com idades diferentes, **When** a retenção é aplicada, **Then** somente os
-   registros inequivocamente vencidos há mais de sete dias são excluídos, sem tocar em outros locais.
+   registros que atingiram sete dias corridos desde o encerramento são excluídos, desde que o
+   vencimento seja inequívoco, sem exclusão antecipada nem alteração de outros locais.
 
 ### Edge Cases
 
@@ -187,7 +195,11 @@ prazo de retenção.
 - **FR-019**: A transferência MUST ser considerada concluída somente após confirmação de Carlos ou
   evidência inequívoca de takeover.
 - **FR-020**: Se a transferência falhar, Joana MUST informar seu limite, encerrar educadamente e
-  registrar a falha sem continuar a conversa.
+  registrar a falha sem continuar a conversa. Se não houver confirmação de Carlos nem evidência
+  inequívoca de takeover em 10 segundos desde o início da transferência, o sistema MUST tratar a
+  transferência como falha. Uma falha detectada antes desse prazo MUST iniciar o encerramento seguro
+  sem aguardar o restante. O prazo de confirmação MUST NOT atrasar a interrupção da voz e a devolução
+  do áudio previstas em FR-018.
 - **FR-021**: Cada ação operacional MUST ser precedida e seguida de observação do estado atual; foco,
   destino e resultado MUST ser revalidados sem reutilizar referências obsoletas.
 - **FR-022**: Resultado incerto de discagem MUST NOT provocar repetição da ação sem evidência de que
@@ -222,7 +234,7 @@ prazo de retenção.
 - **Proposta da Assistência**: Informações coletadas sobre diagnóstico, preço e composição, condições,
   prazos, garantia, validade, protocolo e próximos passos, sem aceite.
 - **Transferência Humana**: Pedido e confirmação de que Carlos assumiu, incluindo motivo, momento e
-  resultado da tomada de controle.
+  resultado da tomada de controle, início da transferência e prazo de confirmação de 10 segundos.
 - **Registro da Chamada**: Evidência textual local do preflight, autorização, transcrição redigida,
   proposta, intervenções, resultado e expiração de retenção.
 
@@ -255,10 +267,18 @@ prazo de retenção.
   contém a confirmação vinculada à tentativa e redige todos os dados proibidos apresentados no teste.
 - **SC-007**: Nenhum teste de aceitação produz arquivo ou retenção de áudio, e nenhum dado de chamada
   é transmitido a serviço externo.
-- **SC-008**: Em testes de retenção, 100% dos registros com até sete dias são preservados, 100% dos
-  inequivocamente vencidos são removidos e nenhum arquivo fora da área de chamadas é alterado.
+- **SC-008**: Em testes de retenção, 100% dos registros com menos de sete dias corridos desde o
+  encerramento são preservados, 100% dos registros inequivocamente vencidos ao atingir sete dias são
+  removidos e nenhum arquivo fora da área de chamadas é alterado. Os testes MUST incluir os instantes
+  imediatamente anterior, igual e posterior ao limite de sete dias, em conformidade com FR-029.
 - **SC-009**: Carlos consegue revisar o preflight, autorizar ou recusar a tentativa e identificar o
   resultado final usando somente as informações apresentadas pelo fluxo, sem consultar dados ocultos.
+
+- **SC-010**: Em 100% dos testes de transferência sem confirmação de Carlos nem evidência inequívoca
+  de takeover, o encerramento seguro é iniciado ao completar 10 segundos desde o início da
+  transferência, ou antes se houver falha detectada. Confirmação ou evidência inequívoca recebida antes
+  do vencimento impede o encerramento por timeout. Os testes MUST cobrir o instante anterior ao
+  limite, o vencimento sem confirmação e a falha antecipada, preservando o limite de SC-004.
 
 ## Assumptions
 

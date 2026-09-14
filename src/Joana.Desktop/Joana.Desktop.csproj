@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0-windows</TargetFramework><UseWPF>true</UseWPF></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../Joana.Domain/Joana.Domain.csproj" /><ProjectReference Include="../Joana.Application/Joana.Application.csproj" /><ProjectReference Include="../Joana.Infrastructure/Joana.Infrastructure.csproj" /><ProjectReference Include="../Joana.Simulators/Joana.Simulators.csproj" /></ItemGroup>
+</Project>
